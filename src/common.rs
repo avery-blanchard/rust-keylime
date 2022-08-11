@@ -613,6 +613,7 @@ impl Default for KeylimeConfig {
             allow_payload_revocation_actions: true,
             work_dir: WORK_DIR.to_string(),
             mtls_enabled: true,
+            mtls_cert: "tci_mtls_cert".to_string(),
             enable_insecure_payload: false,
             run_as,
             tpm_ownerpassword: None,
