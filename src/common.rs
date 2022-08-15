@@ -439,14 +439,14 @@ impl KeylimeConfig {
             None
         };
 
-        let mut keylime_ca_path =
+        let mut keylime_ca_path = "/var/lib/keylime/cv_ca/".to_string(); /*
             config_get(&conf_name, &conf, "cloud_agent", "keylime_ca")?;
         if keylime_ca_path == "default" {
             keylime_ca_path = Path::new(&work_dir)
                 .join(DEFAULT_CA_PATH)
                 .display()
                 .to_string();
-        }
+        }*/
         let revocation_actions = config_get(
             &conf_name,
             &conf,
@@ -500,6 +500,8 @@ impl KeylimeConfig {
                 .or::<Error>(Ok(MTLS_ENABLED))?,
             Err(_) => true,
         };
+        
+        let mtls_cert: "tci_mtls_cert".to_string();
 
         let enable_insecure_payload = match config_get(
             &conf_name,
@@ -550,6 +552,7 @@ impl KeylimeConfig {
             allow_payload_revocation_actions,
             work_dir,
             mtls_enabled,
+            mtls_cert,
             enable_insecure_payload,
             run_as,
             tpm_ownerpassword,
