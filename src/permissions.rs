@@ -182,11 +182,7 @@ mod tests {
         let mount = secure_mount::mount(work_dir, &config.agent.secure_size)?;
 
         let run = if get_euid() == 0 {
-            if let Some(ref run) = config.agent.run_as {
-                Some(run.to_string())
-            } else {
-                None
-            }
+            config.agent.run_as.as_ref().map(|run| run.to_string())
         } else {
             return Err(Error::Configuration(
                 "Cannot drop privileges: not enough permission".to_string(),
