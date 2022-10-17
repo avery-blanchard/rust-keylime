@@ -170,3 +170,44 @@ pub(crate) fn chown(user_group: &str, path: &Path) -> Result<()> {
     info!("Changed file {} owner to {}.", path.display(), user_group);
     Ok(())
 }
+mod tests {
+    use super::*;
+    use crate::config::KeylimeConfig;
+    use crate::secure_mount;
+
+    #[test]
+    fn test_chown() -> Result<()> {
+        let mut config = KeylimeConfig::new()?;
+        let work_dir = Path::new(&config.agent.keylime_dir);
+        let mount = secure_mount::mount(work_dir, &config.agent.secure_size)?;
+
+        let run = if get_euid() == 0 {
+            if let Some(ref run) = config.agent.run_as {
+                Some(run.to_string())
+            } else {
+                None
+            }
+        } else {
+            return Err(Error::Configuration(
+                "Cannot drop privileges: not enough permission".to_string(),
+            ));
+        };
+
+        if let Some(user_group) = &run {
+            chown(user_group, &mount)?;
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_tryfrom() {
+        let res = UserIds::try_from("test:test");
+        assert!(res.is_err());
+    }
+    #[test]
+    fn test_runas() {
+        let res = run_as("test:test");
+        assert!(res.is_err());
+    }
+}
