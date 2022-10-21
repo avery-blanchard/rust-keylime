@@ -178,7 +178,8 @@ mod tests {
     #[test]
     fn test_chown() -> Result<()> {
         let mut config = KeylimeConfig::new()?;
-        let work_dir = Path::new(&config.agent.keylime_dir);
+        let dir = "/tmp";
+        let work_dir = Path::new(&dir);
         let mount = secure_mount::mount(work_dir, &config.agent.secure_size)?;
 
         let run = if get_euid() == 0 {
@@ -194,16 +195,5 @@ mod tests {
         }
 
         Ok(())
-    }
-
-    #[test]
-    fn test_tryfrom() {
-        let res = UserIds::try_from("test:test");
-        assert!(res.is_err());
-    }
-    #[test]
-    fn test_runas() {
-        let res = run_as("test:test");
-        assert!(res.is_err());
     }
 }
